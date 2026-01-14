@@ -1,0 +1,438 @@
+//task-1
+
+public class SmartHomeTester {
+    public static void main(String[] args) {
+        SmartSecurityCamera cam1 = new SmartSecurityCamera("Garden-Cam", 100, 64);
+        cam1.powerOn();
+        System.out.println("=====================");
+        cam1.record(true);
+        System.out.println("=====================");
+        cam1.powerOff();
+        System.out.println("=====================");
+        cam1.powerOn();
+        System.out.println("=====================");
+        cam1.record();
+        System.out.println("=====================");
+        cam1.formatCard("0000");
+        System.out.println("=====================");
+        cam1.formatCard("ADMIN123");
+        System.out.println("=====================");
+        SmartSecurityCamera cam2 = new SmartSecurityCamera("Indoor-Cam", 80, 1);
+        cam2.powerOn();
+        System.out.println("=====================");
+        cam2.record();
+        System.out.println("=====================");
+        cam2.powerOff();
+        System.out.println("=====================");
+        cam2.powerOn();
+        System.out.println("=====================");
+        cam2.formatCard("ADMIN123");
+        System.out.println("=====================");
+        cam2 = new SmartSecurityCamera("Indoor-Cam", 2, 10);
+        cam2.powerOn();
+    }
+}
+
+class SmartDevice {
+    public String deviceName;
+    private double batteryLevel;
+    protected boolean isActive;
+
+    SmartDevice(String name, double battery) {
+        this.deviceName = name;
+        this.batteryLevel = battery;
+        this.isActive = false;
+    }
+
+    public void powerOn() {
+        if (batteryLevel > 5) {
+            isActive = true;
+            batteryLevel -= 2;
+            System.out.println(deviceName + " is now ONLINE.");
+        } else {
+            System.out.println("Power Low: " + deviceName + " cannot start.");
+        }
+    }
+
+    public void powerOff() {
+        this.isActive = false;
+        System.out.println(deviceName + " has shut down.");
+    }
+
+    public double getBattery() {
+        return batteryLevel;
+    }
+}
+
+class SmartSecurityCamera extends SmartDevice {
+    private int storagecap;
+    private int remainingstorage;
+    private boolean nightvisaction;
+
+    public SmartSecurityCamera(String name, double battery, int storage) {
+        super(name, battery);
+        this.storagecap = storage;
+        this.remainingstorage = storage;
+        this.nightvisaction = false;
+    }
+
+    
+    public void powerOn() {
+        if (remainingstorage <= 0) {
+            System.out.println("Error: " + deviceName + " storage full. Recording disabled.");
+        } else {
+            super.powerOn();
+        }
+    }
+
+    public void powerOff() {
+        if (nightvisaction) {
+            System.out.println("Turning off Night Vision.");
+            nightvisaction = false;
+        }
+        super.powerOff();
+    }
+    public void record(boolean nightVision) {
+        if (nightVision) {
+            nightvisaction = true;
+            System.out.println("[IR SENSORS ACTIVE]");
+        }
+        System.out.println("Recording standard footage.");
+        remainingstorage--;
+    }
+
+    public void record() {
+        record(false);
+    }
+    public void formatCard(String pin) {
+        System.out.println("REQUEST: Format SD Card initiated.");
+        if (!isActive) {
+            System.out.println("ERROR: Device must be ON to format.");
+            return;
+        }
+
+        if (pin.equals("ADMIN123")) {
+            System.out.println("Auth Success. Wiping data.");
+            remainingstorage = storagecap;
+            System.out.println("SUCCESS: Storage restored to " + storagecap + "GB.");
+        } else {
+            System.out.println("ACCESS DENIED: Incorrect PIN.");
+        }
+    }
+}
+
+
+
+
+
+
+//task-2
+
+public class HawkinsLabTester {
+  public static void main(String[] args) {
+    Hawkins place1 = new Hawkins("Hawkins Lab");
+    Hawkins place2 = new Hawkins("Palace Arcade");
+    UpsideDown gate1 = new UpsideDown("The Nina Project");
+    UpsideDown gate2 = new UpsideDown("Brimborn Steel Works");
+    DarkDimension world = new DarkDimension("The Dark World");
+    gate1.open();
+    System.out.println("Total bridges: " + UpsideDown.totalBridges);
+    System.out.println("======== [1] ========");
+    gate1.connect(place1);
+    gate1.connect(place2); 
+    Hawkins place3 = new Hawkins("Starcourt Mall");
+    gate2.connect(place3);  
+    gate1.details();
+    gate2.details(); 
+    System.out.println("======== [2] ========");
+    world.runExperiment(gate1);
+    world.runExperiment(gate2); 
+    System.out.println("======== [3] ========");
+    System.out.println("Total bridges: " + UpsideDown.totalBridges); 
+    System.out.println("======== [4] ========");
+    Hawkins place4 = new Hawkins("Byers new house");
+    gate1.connect(place4);
+    gate1.disconnect(2);
+    gate2.disconnect(3); 
+    System.out.println("======== [5] ========");
+    gate1.details();
+  }
+}
+// Grand Parent Class 
+class Hawkins {
+    public String name;
+    public boolean status = false;
+
+    public Hawkins(String name) {
+        this.name = name;
+    }
+
+    public boolean checkBridge(Hawkins h) {
+        if (h.status == true) {
+            System.out.println("Bridge present at " + h.name);
+            return true;
+        } else {
+            System.out.println("No Bridge present at " + h.name);
+            return false;
+        }
+    }
+
+    public void open() {
+        if (status == false) {
+            status = true;
+            System.out.println("Bridge from " + name + " is Open");
+        }
+    }
+}
+// Parent Class 
+class UpsideDown extends Hawkins {
+    public static int totalBridges = 0;
+    private Hawkins bridge1;
+    private Hawkins bridge2;
+
+    public UpsideDown(String name) {
+        super(name);
+    }
+
+    public void connect(Hawkins place) {
+        if (bridge1 == null) {
+            bridge1 = place;
+            totalBridges++;
+        } else if (bridge2 == null) {
+            bridge2 = place;
+            totalBridges++;
+        } else {
+            System.out.println("No further bridges with " + this.name);
+        }
+    }
+
+    public void disconnect(int bridgeNumber) {
+        if (bridgeNumber == 1 && bridge1 != null) {
+            bridge1 = null;
+            totalBridges--;
+        } else if (bridgeNumber == 2 && bridge2 != null) {
+            bridge2 = null;
+            totalBridges--;
+        } else {
+            System.out.println("Invalid bridge number!");
+        }
+    }
+
+    public void details() {
+        System.out.println(this.name + " Details:");
+        if (bridge1 != null) {
+            System.out.println("Bridge 1: " + bridge1.name);
+        }
+        if (bridge2 != null) {
+            System.out.println("Bridge 2: " + bridge2.name);
+        }
+    }
+
+    public void activate(Hawkins place) {
+        System.out.println("Activating the door of " + place.name);
+    }
+
+    public Hawkins getBridge1() {
+        return bridge1;
+    }
+
+    public Hawkins getBridge2() {
+        return bridge2;
+    }
+}
+// Child Class
+class DarkDimension extends UpsideDown {
+    public DarkDimension(String name) {
+        super(name);
+    }
+
+    public void runExperiment(UpsideDown portal) {
+        if (!this.checkBridge(portal)) {
+            System.out.println("Cannot run experiment.");
+        } else {
+            if (portal.getBridge1() != null) {
+                portal.activate(portal.getBridge1());
+                System.out.println("Experiment executed successfully!");
+            } else if (portal.getBridge2() != null) {
+                portal.activate(portal.getBridge2());
+                System.out.println("Experiment executed successfully!");
+            } else {
+                System.out.println("No experiment found!");
+            }
+        }
+    }
+}
+
+
+
+
+
+
+//task-3
+
+public class garagetester {
+
+    public static void main(String[] args) {
+
+        Garage g = new Garage(2, 3);
+
+        System.out.println("==========0===========");
+
+        Vehicle vC1 = new Car("Ford", "Mustang", 2022, 2, 4, false);
+        Vehicle vC2 = new Car("Tesla", "Model S", 2025, 4, 4, true);
+        Vehicle vC3 = new Car("Reliant", "Robin", 1981, 2, 3, false);
+
+        System.out.println("==========1===========");
+        System.out.println(vC1);
+
+        System.out.println("==========2===========");
+        g.addVehicle(vC1);
+        g.addVehicle(vC2);
+        g.addVehicle(vC3);
+        System.out.println(g.cars[1]);
+
+        System.out.println("==========3===========");
+        g.cars[0].startAutoPilot();
+        g.cars[1].startAutoPilot();
+
+        System.out.println("==========4===========");
+        Vehicle vB1 = new Bike("Honda", "Gold Wing", 2022, 3, true);
+        System.out.println(vB1);
+        g.addVehicle(vB1);
+
+        System.out.println("==========5===========");
+        Vehicle vB2 = new Bike("Royal Enfield", "Classic 350", 2021, 2, false);
+        g.addVehicle(vB2);
+        System.out.println(g.bikes[1]);
+
+        System.out.println("==========6===========");
+        Vehicle vB3 = new Bike("Harley-Davidson", "Street 750", 2022, 2, false);
+        g.addVehicle(vB3);
+
+        Vehicle vB4 = new Bike("Yamaha", "MT-15", 2023, 2, false);
+        g.addVehicle(vB4);
+
+        System.out.println("=========7============");
+        g.bikes[0].doAWheelie();
+        g.bikes[1].doAWheelie();
+    }
+}
+
+class Garage {
+
+    public Car[] cars;
+    public Bike[] bikes;
+    private int carCount;
+    private int bikeCount;
+
+    public Garage(int carCap, int bikeCap) {
+        cars = new Car[carCap];
+        bikes = new Bike[bikeCap];
+        System.out.println("Welcome to the Garage!");
+        System.out.println("Car Capacity: " + carCap);
+        System.out.println("Bike Capacity: " + bikeCap);
+    }
+
+    public void addVehicle(Vehicle v) {
+        if (v instanceof Car) {
+            if (carCount < cars.length) {
+                cars[carCount++] = (Car) v;
+                System.out.println("A " + v.getBrand() + " CAR has been added to the Garage");
+            } else {
+                System.out.println("Can't add more Cars! Capacity: " + cars.length);
+            }
+        } else if (v instanceof Bike) {
+            if (bikeCount < bikes.length) {
+                bikes[bikeCount++] = (Bike) v;
+                System.out.println("A " + v.getBrand() + " BIKE has been added to the Garage");
+            } else {
+                System.out.println("Can't add more bikes! Capacity: " + bikes.length);
+            }
+        }
+    }
+}
+
+class Car extends Vehicle {
+
+    private String model;
+    private int doors;
+    private boolean autoPilot;
+
+    public Car(String brand, String model, int year, int doors, int wheels, boolean autoPilot) {
+        super(brand, year);
+        this.model = model;
+        this.doors = doors;
+        this.autoPilot = autoPilot;
+        setWheels(wheels);
+    }
+
+    public void startAutoPilot() {
+        if (autoPilot) {
+            System.out.println(getBrand() + ":" + model + " AutoPilot Started");
+        } else {
+            System.out.println(getBrand() + ":" + model + " has NO AutoPilot");
+        }
+    }
+
+    public String toString() {
+        return "Car Brand: " + getBrand() + ", Year: " + getYear() + ", Wheels: " + getWheels()
+                + ", Model: " + model + ", Doors: " + doors + ", AI: " + autoPilot;
+    }
+}
+
+class Bike extends Vehicle {
+
+    private String model;
+    private boolean sideCar;
+
+    public Bike(String brand, String model, int year, int wheels, boolean sideCar) {
+        super(brand, year);
+        this.model = model;
+        this.sideCar = sideCar;
+        setWheels(wheels);
+    }
+
+    public void doAWheelie() {
+        if (sideCar) {
+            System.out.println("Wheelie Failed. " + getBrand() + ":" + model + " has SideCar");
+        } else {
+            System.out.println(getBrand() + ":" + model + " is doing Wheelie!!");
+        }
+    }
+
+    public String toString() {
+        return "Bike Brand: " + getBrand() + ", Year: " + getYear() + ", Wheels: " + getWheels()
+                + ", Model: " + model + ", SideCar: " + sideCar;
+    }
+}
+
+class Vehicle {
+
+    private String brand;
+    private int year, wheels;
+
+    public Vehicle(String b, int y) {
+        brand = b;
+        year = y;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public void setWheels(int w) {
+        wheels = w;
+    }
+
+    public int getWheels() {
+        return wheels;
+    }
+
+    public String toString() {
+        return "Brand: " + brand + ", Year: " + year + ", Wheels: " + wheels;
+    }
+}

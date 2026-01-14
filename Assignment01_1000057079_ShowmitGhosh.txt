@@ -1,0 +1,96 @@
+//lab - 1 task 1
+import java.util.*;
+
+public class lab1task1 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        int m = sc.nextInt();
+        if (n > m) {
+            int a = n;
+            n = m;
+            m = a;
+        }
+        int divcount = 0, primenumber = 0;
+        for (int i = n; i <= m; i++) {
+            divcount = 0;
+            for (int j = 1; j <= i; j++) {
+                if (i % j == 0) {
+                    divcount++;
+                }
+            }
+            if (divcount == 2) {
+                primenumber++;
+            }
+        }
+        System.out.println("There are " + primenumber + " prime numbers between " + n + " and " + m);
+    }
+}
+
+
+
+
+
+
+//lab - 1 task 2
+import java.util.*;
+
+public class lab1task2 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String s = sc.nextLine();
+        String re = "";
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            re += (char) (c - 1);
+        }
+        System.out.println(re);
+    }
+}
+
+
+
+
+
+
+//lab - 1 task 3
+import java.util.*;
+
+public class lab1task3 {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("N = ");
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        boolean[] boo = new boolean[n];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = sc.nextInt();
+        }
+        for (int i = 0; i < arr.length; i++) {
+            int count = 1;
+            if (i != arr.length - 1 && !boo[i]) {
+                for (int j = i + 1; j < arr.length; j++) {
+                    if (arr[i] == arr[j] && !boo[j]) {
+                        count++;
+                        boo[j] = true;
+                    }
+                }
+                System.out.println(arr[i] + " - " + count + " times");
+            } else if (!boo[i]) {
+                System.out.println(arr[i] + " - 1 times");
+            }
+        }
+
+    }
+}
+
+
+
+
+
+//lab1task4 - design class
+public class CSECourse {
+    String courseName = "Programming Language II";
+    String courseCode = "CSE111";
+    int credit = 3;
+}

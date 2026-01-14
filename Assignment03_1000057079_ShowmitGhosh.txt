@@ -1,0 +1,189 @@
+// task - 1
+public class Toy {
+    public String n;
+    public int p;
+
+    public Toy(String x, int y) {
+        System.out.println("A new toy has been made!");
+        n = x;
+        p = y;
+    }
+
+    public void updatePrice(int z) {
+        p = z;
+    }
+
+    public void showPrice() {
+        System.out.println("Price: " + p + " Taka");
+    }
+
+    public void updateName(String x) {
+        System.out.println("Changing old name: " + n);
+        n = x;
+        System.out.println("new name: " + x);
+    }
+}
+
+
+
+
+// task - 2
+public class Cart {
+    int no;
+    String[] it = new String[3];
+    double[] pr = new double[3];
+    int cnt = 0;
+    double dis = 0.0;
+
+    public void create_cart(int x) {
+        no = x;
+    }
+
+    public void addItem(String s, double p) {
+        if (cnt < 3) {
+            it[cnt] = s;
+            pr[cnt] = p;
+            cnt++;
+            System.out.println(s + " added to cart " + no + ".");
+            System.out.println("You have " + cnt + " item(s) in your cart now.");
+        } else {
+            System.out.println("You already have 3 items on your cart");
+        }
+    }
+
+    public void addItem(double p, String s) {
+        if (cnt < 3) {
+            it[cnt] = s;
+            pr[cnt] = p;
+            cnt++;
+            System.out.println(s + " added to cart " + no + ".");
+            System.out.println("You have " + cnt + " item(s) in your cart now.");
+        } else {
+            System.out.println("You already have 3 items on your cart");
+        }
+    }
+
+    public void giveDiscount(double d) {
+        dis = d;
+        for (int i = 0; i < cnt; i++) {
+            pr[i] = pr[i] - (pr[i] * dis / 100);
+        }
+    }
+
+    public void cartDetails() {
+        System.out.println("Your cart(c" + no + ") : ");
+        double tot = 0;
+        for (int i = 0; i < cnt; i++) {
+            System.out.println(it[i] + " - " + pr[i]);
+            tot += pr[i];
+        }
+        System.out.println("Discount Applied: " + dis + "%");
+        System.out.println("Total price: " + tot);
+    }
+}
+
+
+
+
+// task - 3
+public class Reader {
+    String nm;
+    int cap;
+    String[] bk;
+    int c = 0;
+
+    public Reader(String n) {
+        nm = n;
+        cap = 2;
+        bk = new String[cap];
+        System.out.println("A new reader is created!");
+    }
+
+    public Reader(String n, int x) {
+        nm = n;
+        cap = x;
+        bk = new String[cap];
+        System.out.println("A new reader is created!");
+    }
+
+    public void addBook(String b) {
+        if (c < cap) {
+            bk[c] = b;
+            c++;
+        } else {
+            System.out.println("No more capacity");
+        }
+    }
+
+    public void updateCapacity(int x) {
+        cap = x;
+        String[] tmp = new String[cap];
+        for (int i = 0; i < c && i < cap; i++) {
+            tmp[i] = bk[i];
+        }
+        bk = tmp;
+        System.out.println("Capacity has changed to " + cap);
+    }
+
+    public void readerInfo() {
+        System.out.println("Name: " + nm);
+        System.out.println("Capacity: " + cap);
+        System.out.println("Books: ");
+        if (c == 0) {
+            System.out.println("No books added yet");
+        } else {
+            for (int i = 0; i < c; i++) {
+                System.out.println("Book " + (i + 1) + ": " + bk[i]);
+            }
+        }
+    }
+}
+
+
+
+
+// task - 4
+public class MoneyTracker {
+    String nm;
+    double bal = 0.0;
+    double inc = 0.0;
+    double exp = 0.0;
+
+    public MoneyTracker() {
+        System.out.println("A new money tracker has been launched. ");
+    }
+
+    public void createTracker(String n) {
+        nm = n;
+        bal = 1.0;
+    }
+
+    public void income(double a) {
+        inc = a;
+        bal += a;
+        System.out.println("Balance Updated!");
+    }
+
+    public void expense(double a) {
+        if (a > bal) {
+            System.out.println("Not enough balance.");
+        } else {
+            bal -= a;
+            exp = a;
+            if (bal == 0) {
+                System.out.println("You're broke!");
+            } else {
+                System.out.println("Balance Updated.");
+            }
+        }
+    }
+
+    public String info() {
+        return "Name: " + nm + "\nCurrent Balance: " + bal;
+    }
+
+    public void showHistory() {
+        System.out.println("Last added: " + inc);
+        System.out.println("Last spent: " + exp);
+    }
+}
